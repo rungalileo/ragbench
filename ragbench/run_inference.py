@@ -13,7 +13,7 @@ import logging
 import asyncio
 from typing import Dict, Optional
 
-from datasets import Dataset, load_dataset
+from datasets import load_dataset
 from trulens_async import AsyncTrulensOpenAI
 from constants import HUGGINGFACE_REPO_NAME, RAGBenchFields, TrulensFields, RagasFields
 from evaluation import calculate_metrics
@@ -28,6 +28,7 @@ def parse_args():
     parser.add_argument('--dataset', help='Name of the component dataset to run inference on')
     parser.add_argument('--model', help='Model to use for inference')
     parser.add_argument('--output', help='Path for output files')
+    parser.add_argument('--force', action='store_true')
 
     args = parser.parse_args()
 
@@ -73,7 +74,7 @@ if __name__ == "__main__":
 
     # Run Inference
     output_path = os.path.join(args.output, f"{args.dataset}_{args.model}.jsonl")
-    if not os.path.exists(output_path):
+    if not os.path.exists(output_path) or args.force:
         if args.model == "trulens":
             loop = asyncio.get_event_loop()
             ds = loop.run_until_complete(trulens_annotate_dataset(ds, output_path))
@@ -95,6 +96,3 @@ if __name__ == "__main__":
     metrics_output_path = os.path.join(args.output, f"{args.dataset}_{args.model}_metrics.json")
     with open(metrics_output_path, "w") as f:
         f.write(json.dumps(metrics, indent=4))
-    
-        
-
