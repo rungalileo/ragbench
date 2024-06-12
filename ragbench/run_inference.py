@@ -1,6 +1,4 @@
 """
-export HF_TOKEN=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
-export OPENAI_API_KEY=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
 export PYTHONPATH="${PYTHONPATH}:/Users/masha/Documents/galileo/rungalileo/ragbench"
 
 python run_inference.py --dataset delucionqa --model trulens --output results
@@ -80,7 +78,7 @@ if __name__ == "__main__":
             ds = loop.run_until_complete(trulens_annotate_dataset(ds, output_path))
         elif args.model == "ragas":
             ds = ragas_annotate_dataset(ds, output_path)
-        
+
     # Calculate Metrics
     results_path = os.path.join(args.output, f"{args.dataset}_{args.model}.jsonl")
     annotated_ds = load_dataset("json", data_files= results_path)['train']
@@ -91,7 +89,7 @@ if __name__ == "__main__":
     )
     print(json.dumps(metrics, indent=4))
 
-    
+
     # Save Results
     metrics_output_path = os.path.join(args.output, f"{args.dataset}_{args.model}_metrics.json")
     with open(metrics_output_path, "w") as f:
